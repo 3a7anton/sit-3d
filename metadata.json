@@ -1,0 +1,6 @@
+{
+  "name": "School of Integrated Thoughts (SIT)",
+  "description": "Official institutional portal for School of Integrated Thoughts — an Islamic educational institution integrating knowledge across curriculum development, advanced research, publications, and consultancy.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
