@@ -60,13 +60,16 @@ export const ScrollExpand: React.FC<ScrollExpandProps> = ({
     };
   }, []);
 
-  // Compute interpolated frame geometry
-  const widthVal = initialWidthPercent + (100 - initialWidthPercent) * progress;
-  const heightVal = initialHeightVh + (100 - initialHeightVh) * progress;
-  const borderRadiusVal = (1 - progress) * 28; // From 28px down to 0px
+  // Ease-out curve: frame expands quickly, reaches ~94% by progress 0.5
+  const expandProgress = 1 - Math.pow(1 - progress, 2.5);
+
+  // Compute interpolated frame geometry using eased expansion
+  const widthVal = initialWidthPercent + (100 - initialWidthPercent) * expandProgress;
+  const heightVal = initialHeightVh + (100 - initialHeightVh) * expandProgress;
+  const borderRadiusVal = (1 - expandProgress) * 28; // From 28px down to 0px
   const initialOpacity = Math.max(0, 1 - progress * 2.5);
-  const overlayOpacity = Math.max(0, (progress - 0.45) * 2.2);
-  const mediaScale = 1 + (1 - progress) * 0.12;
+  const overlayOpacity = Math.min(1, Math.max(0, (progress - 0.3) * 4));
+  const mediaScale = 1 + (1 - expandProgress) * 0.12;
 
   return (
     <div ref={trackRef} className={`scroll-expand-track ${className}`}>

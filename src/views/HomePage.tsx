@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { ScrollExpand } from '../components/ScrollExpand/ScrollExpand';
 import { SpotlightCard } from '../components/SpotlightCard/SpotlightCard';
@@ -54,6 +54,15 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate: propNavigate }) =>
   // Eight Areas of Work carousel & expansion state
   const [activeAreaIndex, setActiveAreaIndex] = useState(0);
   const [expandedArea, setExpandedArea] = useState<any | null>(null);
+
+  // Responsive: detect mobile viewport for carousel sizing
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   // Close modal on Escape
   React.useEffect(() => {
@@ -291,7 +300,7 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate: propNavigate }) =>
   ];
 
   return (
-    <div className="relative min-h-screen bg-[#0b1320] text-stone-100 overflow-x-hidden selection:bg-amber-600 selection:text-white">
+    <div className="relative min-h-screen bg-[#0b1320] text-stone-100 selection:bg-amber-600 selection:text-white">
       {/* GhostFibers WebGL Flowing Fibers Ambient Background Layer */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-60">
         <GhostFibers
@@ -343,11 +352,10 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate: propNavigate }) =>
                     <button
                       key={key}
                       onClick={() => setFiberTheme(key)}
-                      className={`w-full text-left px-2.5 py-1.5 rounded-lg flex items-center justify-between transition-all ${
-                        active
-                          ? 'bg-amber-400/20 border border-amber-400/40 text-amber-200'
-                          : 'bg-white/5 border border-transparent text-stone-300 hover:bg-white/10'
-                      }`}
+                      className={`w-full text-left px-2.5 py-1.5 rounded-lg flex items-center justify-between transition-all ${active
+                        ? 'bg-amber-400/20 border border-amber-400/40 text-amber-200'
+                        : 'bg-white/5 border border-transparent text-stone-300 hover:bg-white/10'
+                        }`}
                     >
                       <span className="truncate">{themeConfig[key].name}</span>
                       <span
@@ -382,7 +390,7 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate: propNavigate }) =>
       <section className="relative z-10">
         <ScrollExpand
           mediaSrc={heroConferenceImg}
-          initialSubtitle="A project of Spectrum EduCare Limited"
+          initialSubtitle="An initiative of Spectrum EduCare Limited"
           initialTitle="School of Integrated Thoughts"
           overlayContent={
             <div className="max-w-4xl space-y-6">
@@ -424,8 +432,8 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate: propNavigate }) =>
       </section>
 
       {/* What We Do & The 8 Areas of Work with DepthCarousel (Transparent, No Outline, Click to Expand) */}
-      <section className="relative z-10 py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="text-center max-w-3xl mx-auto mb-6">
+      <section className="relative z-10 py-16 px-1 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="text-center max-w-3xl mx-auto mb-6 px-3 sm:px-0">
           <span className="text-xs uppercase tracking-[0.2em] text-amber-400 font-semibold block mb-2">
             What We Do
           </span>
@@ -438,19 +446,19 @@ export const HomePage: React.FC<HomePageProps> = ({ navigate: propNavigate }) =>
         </div>
 
         {/* 3D DepthCarousel Stage - Completely Transparent, No Outline, No Background Images */}
-        <div className="relative w-full h-[490px] sm:h-[510px] flex items-center justify-center my-4">
+        <div className="relative w-full h-[540px] sm:h-[510px] flex items-center justify-center my-4">
           <DepthCarousel
             items={areaCarouselItems}
-            cardWidth={310}
-            cardHeight={410}
+            cardWidth={isMobile ? 355 : 310}
+            cardHeight={isMobile ? 450 : 410}
             radius={20}
             tint="#05060a"
-            depth={200}
-            spread={85}
+            depth={isMobile ? 120 : 200}
+            spread={isMobile ? 25 : 85}
             tilt={20}
             tiltDirection="right"
             perspective={1400}
-            visibleCards={4}
+            visibleCards={isMobile ? 3 : 4}
             falloff={0.2}
             blur={6}
             duration={700}

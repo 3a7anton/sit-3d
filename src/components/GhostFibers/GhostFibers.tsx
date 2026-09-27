@@ -235,6 +235,14 @@ export const GhostFibers: React.FC<GhostFibersProps> = ({
     let canvas: HTMLCanvasElement;
     let gl: any;
 
+    // Pre-check WebGL2 availability to avoid noisy constructor errors
+    const testCanvas = document.createElement('canvas');
+    const testGl = testCanvas.getContext('webgl2');
+    if (!testGl) {
+      console.warn('WebGL2 not supported for GhostFibers');
+      return;
+    }
+
     try {
       renderer = new Renderer({
         webgl: 2,
@@ -245,7 +253,7 @@ export const GhostFibers: React.FC<GhostFibersProps> = ({
       gl = renderer.gl as any;
       canvas = gl.canvas as HTMLCanvasElement;
     } catch (e) {
-      console.warn('WebGL2 not supported for GhostFibers', e);
+      console.warn('WebGL2 initialization failed for GhostFibers', e);
       return;
     }
 
